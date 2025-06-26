@@ -91,7 +91,8 @@ public class CorebrainCS(string pythonPath = "python", string scriptPath = "core
       args = arguments;
     }
 
-
+    var outputBuilder = new StringBuilder();
+    var errorBuilder = new StringBuilder();
 
     if (_verbose) {
       Console.WriteLine($"Executing: {fileName} {args}");
@@ -113,22 +114,47 @@ public class CorebrainCS(string pythonPath = "python", string scriptPath = "core
     };
 
     process.Start();
-    var output = process.StandardOutput.ReadToEnd();
-    var error = process.StandardError.ReadToEnd();
-    process.WaitForExit();
 
-    if (_verbose) {
-      Console.WriteLine("Command output:");
-      Console.WriteLine(output);
-      if (!string.IsNullOrEmpty(error)) {
-        Console.WriteLine("Error output:\n" + error);
+    // Start tasks to read standard output and error asynchronously
+    var standardOutputTask = Task.Run(async () => {
+      var buffer = new char[1024];
+      int read;
+      while ((read = await process.StandardOutput.ReadAsync(buffer, 0, buffer.Length)) > 0) { // Keep reading as long as there is data in the stream
+        var text = new string(buffer, 0, read);
+        outputBuilder.Append(text);
+        if (_verbose) {
+          Console.Write(text);
+        }
       }
+    });
+
+    var standardErrorTask = Task.Run(async () => {
+      // Allocate a character buffer to read in chunks
+      var buffer = new char[1024];
+      int read;
+      while ((read = await process.StandardError.ReadAsync(buffer, 0, buffer.Length)) > 0) {
+        var text = new string(buffer, 0, read);
+        errorBuilder.Append(text);
+        if (_verbose) {
+          // Change the console color to red for error output
+          var prevColor = Console.ForegroundColor;
+          Console.ForegroundColor = ConsoleColor.Red;
+          Console.Error.Write(text);
+          Console.ForegroundColor = prevColor;
+        }
+      }
+    });
+
+    await Task.WhenAll(standardOutputTask, standardErrorTask);  // Wait for both output and error tasks to finish
+    await process.WaitForExitAsync(); // Wait for the process to exit completely
+
+    if (process.ExitCode != 0) {  // Check if the process exited with a non-zero exit code
+      var error = errorBuilder.ToString();  // Collect the error output
+      process.Dispose();  // Clean up the process resources
+      throw new InvalidOperationException($"Process exited with code {process.ExitCode}:\n{error}");  // Throw an exception with the error message
     }
 
-    if (!string.IsNullOrEmpty(error)) {
-      throw new InvalidOperationException($"Python CLI error: {error}");
-    }
-
-    return output.Trim();
+    process.Dispose();  // Clean up the process resources
+    return outputBuilder.ToString();  // Return the collected output as a string
   }
 }
