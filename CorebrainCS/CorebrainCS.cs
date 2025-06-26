@@ -15,51 +15,51 @@ public class CorebrainCS(string pythonPath = "python", string scriptPath = "core
   private readonly bool _verbose = verbose;
 
 
-  public string Help() {
-    return ExecuteCommand("--help");
+  public async Task<string> Help() {
+    return await ExecuteCommand("--help");
   }
 
-  public string Version() {
-    return ExecuteCommand("--version");
+  public async Task<string> Version() {
+    return await ExecuteCommand("--version");
   }
 
-  public string Configure() {
-    return ExecuteCommand("--configure");
+  public async Task<string> Configure() {
+    return await ExecuteCommand("--configure");
   }
 
-  public string ListConfigs() {
-    return ExecuteCommand("--list-configs");
+  public async Task<string> ListConfigs() {
+    return await ExecuteCommand("--list-configs");
   }
 
-  public string RemoveConfig() {
-    return ExecuteCommand("--remove-config");
+  public async Task<string> RemoveConfig() {
+    return await ExecuteCommand("--remove-config");
   }
 
-  public string ShowSchema() {
-    return ExecuteCommand("--show-schema");
+  public async Task<string> ShowSchema() {
+    return await ExecuteCommand("--show-schema");
   }
 
-  public string ExtractSchema() {
-    return ExecuteCommand("--extract-schema");
+  public async Task<string> ExtractSchema() {
+    return await ExecuteCommand("--extract-schema");
   }
 
-  public string ExtractSchemaToDefaultFile() {
-    return ExecuteCommand("--extract-schema --output-file test");
+  public async Task<string> ExtractSchemaToDefaultFile() {
+    return await ExecuteCommand("--extract-schema --output-file test");
   }
 
-  public string ConfigID() {
-    return ExecuteCommand("--extract-schema --config-id config");
+  public async Task<string> ConfigID() {
+    return await ExecuteCommand("--extract-schema --config-id config");
   }
 
-  public string SetToken(string token) {
-    return ExecuteCommand($"--token {token}");
+  public async Task<string> SetToken(string token) {
+    return await ExecuteCommand($"--token {token}");
   }
 
-  public string ApiKey(string apikey) {
-    return ExecuteCommand($"--api-key {apikey}");
+  public async Task<string> ApiKey(string apikey) {
+    return await ExecuteCommand($"--api-key {apikey}");
   }
 
-  public string ApiUrl(string apiurl) {
+  public async Task<string> ApiUrl(string apiurl) {
     if (string.IsNullOrWhiteSpace(apiurl)) {
       throw new ArgumentException("API URL cannot be empty or whitespace", nameof(apiurl));
     }
@@ -71,10 +71,10 @@ public class CorebrainCS(string pythonPath = "python", string scriptPath = "core
 
     // Escape the URL for command line safety
     var escapedUrl = apiurl.Replace("\"", "\\\"");
-    return ExecuteCommand($"--api-url \"{escapedUrl}\"");
+    return await ExecuteCommand($"--api-url \"{escapedUrl}\"");
   }
 
-  public string ExecuteCommand(string arguments) {
+  public async Task<string> ExecuteCommand(string arguments) {    // Asynchronous method to support non-blocking execution
     if (_verbose) {
       Console.WriteLine($"Executing: {_pythonPath} {_scriptPath} {arguments}");
     }
