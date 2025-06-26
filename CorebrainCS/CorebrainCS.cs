@@ -104,6 +104,7 @@ public class CorebrainCS(string pythonPath = "python", string scriptPath = "core
         Arguments = args,
         RedirectStandardOutput = true,
         RedirectStandardError = true,
+        RedirectStandardInput = true, // Enable writing input to the process if needed 
         UseShellExecute = false,
         CreateNoWindow = true,
         // Set the encoding to UTF-8 for both standard output and error streams
@@ -141,6 +142,24 @@ public class CorebrainCS(string pythonPath = "python", string scriptPath = "core
           Console.ForegroundColor = ConsoleColor.Red;
           Console.Error.Write(text);
           Console.ForegroundColor = prevColor;
+        }
+      }
+    });
+
+    var inputTask = Task.Run(() => {  // Task to handle input from the console
+      while (!process.HasExited) {  // Keep reading input while the process is still running
+        try {
+          var input = Console.ReadLine();
+          // if the input is empty or null, break the loop
+          if (input == null) {
+            break;
+          }
+
+          process.StandardInput.WriteLine(input);
+          process.StandardInput.Flush();  // Ensure the input is sent immediately
+        }
+        catch {
+          break; // If terminal is non-interactive, exit the loop
         }
       }
     });
