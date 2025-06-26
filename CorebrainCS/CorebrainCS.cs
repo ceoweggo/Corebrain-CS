@@ -77,6 +77,17 @@ public class CorebrainCS(string pythonPath = "python", string scriptPath = "core
     return await ExecuteCommand($"--api-url \"{escapedUrl}\"");
   }
 
+  /// <summary>
+  /// Runs the Corebrain CLI command asynchronously and returns its output.
+  /// 
+  /// Features:
+  /// - Non-blocking execution using async/await.
+  /// - Streams standard output and error in real-time to handle long-running commands efficiently.
+  /// - Prints output live to the console when verbose mode is enabled, showing errors in red.
+  /// - Automatically decides whether to run the command via the Python interpreter (for .py scripts) or directly (for executables).
+  /// - Ensures all input and output use UTF-8 encoding for consistent text handling.
+  /// </summary>
+
   public async Task<string> ExecuteCommand(string arguments) {    // Asynchronous method to support non-blocking execution
     string fileName;
     string args;
