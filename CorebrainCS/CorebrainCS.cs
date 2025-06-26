@@ -26,6 +26,21 @@ public class CorebrainCS(string pythonPath = "python", string scriptPath = "core
     return await ExecuteCommand("--version");
   }
 
+  public async Task<string> CheckStatus() {
+    return await ExecuteCommand("--check-status");
+  }
+  public async Task<string> Authentication() {
+    return await ExecuteCommand("--authentication");
+  }
+
+  public async Task<string> TestConnection() {
+    return await ExecuteCommand("--test-connection");
+  }
+
+  public async Task<string> CreateUser() {
+    return await ExecuteCommand("--create-user");
+  }
+
   public async Task<string> Configure() {
     return await ExecuteCommand("--configure");
   }
@@ -75,6 +90,14 @@ public class CorebrainCS(string pythonPath = "python", string scriptPath = "core
     // Escape the URL for command line safety
     var escapedUrl = apiurl.Replace("\"", "\\\"");
     return await ExecuteCommand($"--api-url \"{escapedUrl}\"");
+  }
+
+  public async Task<string> Whoami() {
+    return await ExecuteCommand("--whoami");
+  }
+
+  public async Task<string> Gui() {
+    return await ExecuteCommand("--gui");
   }
 
   /// <summary>
