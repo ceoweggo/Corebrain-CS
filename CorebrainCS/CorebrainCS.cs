@@ -75,18 +75,33 @@ public class CorebrainCS(string pythonPath = "python", string scriptPath = "core
   }
 
   public async Task<string> ExecuteCommand(string arguments) {    // Asynchronous method to support non-blocking execution
+    string fileName;
+    string args;
+
+    // Determine if the script is a Python file or a CLI executable
+    if (_scriptPath.EndsWith(".py")) { // If it's a Python script, run it using a Python interpreter
+      fileName = _pythonPath;
+      args = $"\"{_scriptPath}\" {arguments}";
+    }
+    else {  // Otherwise, assume it's a CLI command or executable and use it directly without using Python interpreter
+      fileName = _scriptPath;
+      args = arguments;
+    }
+
+
+
     if (_verbose) {
-      Console.WriteLine($"Executing: {_pythonPath} {_scriptPath} {arguments}");
+      Console.WriteLine($"Executing: {fileName} {args}");
     }
 
     var process = new Process {
       StartInfo = new ProcessStartInfo {
-        FileName = _pythonPath,
-        Arguments = $"\"{_scriptPath}\" {arguments}",
+        FileName = fileName,
+        Arguments = args,
         RedirectStandardOutput = true,
         RedirectStandardError = true,
         UseShellExecute = false,
-        CreateNoWindow = true
+        CreateNoWindow = true,
       }
     };
 
