@@ -2,6 +2,9 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Text;          // Encoding and StringBuilder
+
 
 /// <summary>
 /// Creates the main corebrain interface.
@@ -102,6 +105,10 @@ public class CorebrainCS(string pythonPath = "python", string scriptPath = "core
         RedirectStandardError = true,
         UseShellExecute = false,
         CreateNoWindow = true,
+        // Set the encoding to UTF-8 for both standard output and error streams
+        StandardOutputEncoding = Encoding.UTF8,
+        StandardErrorEncoding = Encoding.UTF8,
+        Environment = { ["PYTHONIOENCODING"] = "utf-8" } // Ensure Python uses UTF-8 encoding
       }
     };
 
