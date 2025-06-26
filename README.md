@@ -30,7 +30,7 @@ using CorebrainCS;
 var corebrain = new CorebrainCS();
 
 // Get version
-Console.WriteLine($"CoreBrain version: {corebrain.Version()}");
+Console.WriteLine($"CoreBrain version: {await corebrain.Version()}");
 ```
 
 ## Advanced Configuration
