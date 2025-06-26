@@ -11,7 +11,7 @@ using System.Diagnostics;
 /// <param name="verbose"></param>
 public class CorebrainCS(string pythonPath = "python", string scriptPath = "corebrain", bool verbose = false) {
   private readonly string _pythonPath = Path.GetFullPath(pythonPath);
-  private readonly string _scriptPath = Path.GetFullPath(scriptPath);
+  private readonly string _scriptPath = Path.IsPathRooted(scriptPath) ? Path.GetFullPath(scriptPath) : scriptPath;
   private readonly bool _verbose = verbose;
 
 
