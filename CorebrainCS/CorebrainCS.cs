@@ -112,6 +112,8 @@ public class CorebrainCS(string pythonPath = "python", string scriptPath = "core
   /// </summary>
 
   public async Task<string> ExecuteCommand(string arguments) {    // Asynchronous method to support non-blocking execution
+    Console.OutputEncoding = Encoding.UTF8;
+
     string fileName;
     string args;
 
