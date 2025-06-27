@@ -18,10 +18,6 @@ public class CorebrainCS(string pythonPath = "python", string scriptPath = "core
   private readonly bool _verbose = verbose;
 
 
-  public async Task<string> Help() {
-    return await ExecuteCommand("--help");
-  }
-
   public async Task<string> Version() {
     return await ExecuteCommand("--version");
   }
@@ -49,47 +45,8 @@ public class CorebrainCS(string pythonPath = "python", string scriptPath = "core
     return await ExecuteCommand("--list-configs");
   }
 
-  public async Task<string> RemoveConfig() {
-    return await ExecuteCommand("--remove-config");
-  }
-
   public async Task<string> ShowSchema() {
     return await ExecuteCommand("--show-schema");
-  }
-
-  public async Task<string> ExtractSchema() {
-    return await ExecuteCommand("--extract-schema");
-  }
-
-  public async Task<string> ExtractSchemaToDefaultFile() {
-    return await ExecuteCommand("--extract-schema --output-file test");
-  }
-
-  public async Task<string> ConfigID() {
-    return await ExecuteCommand("--extract-schema --config-id config");
-  }
-
-  public async Task<string> SetToken(string token) {
-    return await ExecuteCommand($"--token {token}");
-  }
-
-  public async Task<string> ApiKey(string apikey) {
-    return await ExecuteCommand($"--api-key {apikey}");
-  }
-
-  public async Task<string> ApiUrl(string apiurl) {
-    if (string.IsNullOrWhiteSpace(apiurl)) {
-      throw new ArgumentException("API URL cannot be empty or whitespace", nameof(apiurl));
-    }
-
-    if (!Uri.TryCreate(apiurl, UriKind.Absolute, out var uriResult) ||
-        (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps)) {
-      throw new ArgumentException("Invalid API URL format. Must be a valid HTTP/HTTPS URL", nameof(apiurl));
-    }
-
-    // Escape the URL for command line safety
-    var escapedUrl = apiurl.Replace("\"", "\\\"");
-    return await ExecuteCommand($"--api-url \"{escapedUrl}\"");
   }
 
   public async Task<string> Whoami() {
